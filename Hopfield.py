@@ -19,11 +19,19 @@ class SimplifiedHopfieldTSP:
         self.C = C  # 惩罚未遍历所有快递点
         self.D = D  # 目标项（路径长度权重）
         # 神经元状态矩阵 V[i][j]：第j步访问第i个快递点（1=是，0=否）
-        self.V = np.random.randint(0, 2, (self.N, self.N))
-        # 确保初始状态每行每列至少有一个1（简化初始化）
-        for i in range(self.N):
-            self.V[i, np.random.randint(0, self.N)] = 1
-            self.V[np.random.randint(0, self.N), i] = 1
+        self.V = np.zeros((self.N, self.N))
+        # 初始化：确保从1号点（索引0）开始
+        self.V[0, 0] = 1  # 第0步必须访问1号点
+        # 随机初始化其他位置，但确保每行每列至少有一个1
+        for i in range(1, self.N):
+            # 每行（除第0行）随机选择一个位置设为1
+            j = np.random.randint(1, self.N)
+            self.V[i, j] = 1
+        # 确保每列（除第0列）至少有一个1
+        for j in range(1, self.N):
+            if np.sum(self.V[:, j]) == 0:
+                i = np.random.randint(1, self.N)
+                self.V[i, j] = 1
 
     def energy_function(self):
         """计算能量函数（简化版，对应论文E=E约束项+E距离项）"""
@@ -33,6 +41,14 @@ class SimplifiedHopfieldTSP:
         constraint2 = np.sum(np.square(np.sum(self.V, axis=0) - 1))
         # 约束项3：必须遍历所有快递点（总激活数=快递点数量）
         constraint3 = np.square(np.sum(self.V) - self.N)
+        # 约束项4：确保从1号点开始（第0步必须访问1号点，且1号点只能在第0步访问）
+        constraint4 = 0
+        if self.V[0, 0] != 1:
+            constraint4 += 1000  # 强烈惩罚：第0步必须访问1号点
+        if np.sum(self.V[0, 1:]) > 0:
+            constraint4 += 1000  # 强烈惩罚：1号点不能在除第0步外的其他步骤访问
+        if np.sum(self.V[1:, 0]) > 0:
+            constraint4 += 1000  # 强烈惩罚：第0步不能访问除1号点外的其他点
         # 距离项：路径总长度（目标项）
         distance_term = 0
         for j in range(self.N):
@@ -44,7 +60,7 @@ class SimplifiedHopfieldTSP:
                         next_j = j + 1
                     distance_term += self.d[i, k] * self.V[i, j] * self.V[k, next_j]
         # 总能量（对应论文的惩罚-目标机制）
-        total_energy = self.A * constraint1 + self.B * constraint2 + self.C * constraint3 + self.D * distance_term
+        total_energy = self.A * constraint1 + self.B * constraint2 + self.C * constraint3 + 1000 * constraint4 + self.D * distance_term
         return total_energy, constraint1, constraint2, constraint3, distance_term
 
     def update_neuron(self):
