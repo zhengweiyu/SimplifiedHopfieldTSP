@@ -118,7 +118,7 @@ check_data_files() {
     
     # 检查是否有数据相关的更改
     if git diff --name-only HEAD | grep -E "(backend/data|frontend/app\.py|data/)" > /dev/null; then
-        print_data "检测到数据管理相关更改"
+        print_data "检测到神经网络相关更改"
         return 0
     fi
     
@@ -177,7 +177,7 @@ check_code_quality() {
 
 # 主函数
 main() {
-    print_message "🔮 Hopfield 数据管理平台 Git 提交脚本"
+    print_message "🔮 Hopfield  Git 提交脚本"
     echo "================================================"
     
     # 检查Git仓库
@@ -195,7 +195,7 @@ main() {
     
     # 检查数据相关文件
     if check_data_files; then
-        print_data "发现数据管理相关更改，建议仔细检查"
+        print_data "发现神经网络相关更改，建议仔细检查"
     fi
     
     # 检查API相关文件
@@ -228,12 +228,12 @@ main() {
     show_history
     
     print_message "✅ Hopfield Git操作完成！"
-    print_data "数据管理平台已更新到远程仓库"
+    print_data "神经网络平台已更新到远程仓库"
 }
 
 # 显示帮助信息
 show_help() {
-    echo "Hopfield 数据管理平台 Git 提交脚本"
+    echo "Hopfield 神经网络 Git 提交脚本"
     echo "======================================"
     echo ""
     echo "使用方法:"
@@ -245,13 +245,13 @@ show_help() {
     echo "示例:"
     echo "  $0                                    # 使用默认提交信息"
     echo "  $0 '修复数据导入功能bug'               # 使用自定义提交信息"
-    echo "  $0 '新增PostgreSQL数据库支持'         # 数据管理相关更新"
+    echo "  $0 '新增PostgreSQL数据库支持'         # 神经网络相关更新"
     echo "  $0 '优化Streamlit可视化界面'          # 前端界面更新"
     echo "  $0 '完善Docker部署配置'              # 部署相关更新"
     echo ""
     echo "功能:"
     echo "  - 自动添加所有更改到暂存区"
-    echo "  - 检测数据管理和API系统相关更改"
+    echo "  - 检测神经网络和API系统相关更改"
     echo "  - 运行Django测试"
     echo "  - 检查代码质量"
     echo "  - 提交更改到本地仓库"
@@ -259,7 +259,7 @@ show_help() {
     echo "  - 显示Git状态和提交历史"
     echo ""
     echo "特殊功能:"
-    echo "  - 数据管理文件更改检测"
+    echo "  - 神经网络文件更改检测"
     echo "  - API系统文件更改检测"
     echo "  - 自动测试运行"
     echo "  - 代码质量检查"
