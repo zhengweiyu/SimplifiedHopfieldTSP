@@ -74,7 +74,7 @@ commit_changes() {
     
     if [ -z "$commit_message" ]; then
         # 如果没有提供提交信息，生成默认信息
-        commit_message="Update: $(date '+%Y-%m-%d %H:%M:%S') - MagicFormula数据管理平台更新"
+        commit_message="Update: $(date '+%Y-%m-%d %H:%M:%S') - Hopfield 更新"
     fi
     
     print_step "提交更改..."
