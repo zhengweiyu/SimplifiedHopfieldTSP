@@ -130,7 +130,7 @@ check_api_files() {
     print_api "检查API相关文件..."
     
     # 检查是否有API相关的更改
-    if git diff --name-only HEAD | grep -E "(backend/api|backend/magicformula)" > /dev/null; then
+    if git diff --name-only HEAD | grep -E "(backend/api|backend/Hopfield)" > /dev/null; then
         print_api "检测到API系统相关更改"
         return 0
     fi
@@ -177,7 +177,7 @@ check_code_quality() {
 
 # 主函数
 main() {
-    print_message "🔮 MagicFormula 数据管理平台 Git 提交脚本"
+    print_message "🔮 Hopfield 数据管理平台 Git 提交脚本"
     echo "================================================"
     
     # 检查Git仓库
@@ -227,13 +227,13 @@ main() {
     # 显示提交历史
     show_history
     
-    print_message "✅ MagicFormula Git操作完成！"
+    print_message "✅ Hopfield Git操作完成！"
     print_data "数据管理平台已更新到远程仓库"
 }
 
 # 显示帮助信息
 show_help() {
-    echo "MagicFormula 数据管理平台 Git 提交脚本"
+    echo "Hopfield 数据管理平台 Git 提交脚本"
     echo "======================================"
     echo ""
     echo "使用方法:"
