@@ -1,5 +1,6 @@
 import streamlit as st
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import rcParams
@@ -150,7 +151,13 @@ def main():
                 else:
                     d_matrix[i, j] = cols[j].number_input(f"点{i+1}→点{j+1}", min_value=1, value=np.random.randint(50, 300))
     st.write("当前距离矩阵：")
-    st.dataframe(d_matrix.round(0).astype(int))
+    # 创建带英文标签的DataFrame
+    df_distance = pd.DataFrame(
+        d_matrix.round(0).astype(int),
+        index=[f"Point {i+1}" for i in range(d_matrix.shape[0])],
+        columns=[f"Point {j+1}" for j in range(d_matrix.shape[1])]
+    )
+    st.dataframe(df_distance)
     st.markdown("---")
 
     # 3. 权重系数设置（对应论文中的A、B、C、D，支持调整体验惩罚力度）
