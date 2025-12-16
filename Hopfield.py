@@ -13,7 +13,8 @@ rcParams['axes.unicode_minus'] = False
 class SimplifiedHopfieldTSP:
     def __init__(self, distance_matrix, A=100, B=100, C=100, D=1):
         self.N = distance_matrix.shape[0]  # 快递点数量
-        self.d = distance_matrix  # 距离矩阵
+        # 确保距离矩阵对称（a到b的距离 = b到a的距离）
+        self.d = (distance_matrix + distance_matrix.T) / 2  # 对称化处理
         # 权重系数（对应论文中的惩罚项和目标项）
         self.A = A  # 惩罚重复访问同一快递点
         self.B = B  # 惩罚同一步骤访问多个快递点
@@ -140,16 +141,44 @@ def main():
             [200, 180, 250, 220, 0]
         ])
     else:
-        # 手动输入距离矩阵
+        # 手动输入距离矩阵（只输入上三角，自动填充下三角使其对称）
+        st.info("💡 提示：只需输入上三角矩阵（i < j），系统会自动填充对称位置使其对称")
+        
+        # 初始化随机距离值（用于上三角）
+        if 'init_distances' not in st.session_state:
+            st.session_state.init_distances = {}
+            for i in range(N):
+                for j in range(i+1, N):
+                    st.session_state.init_distances[f"{i}_{j}"] = np.random.randint(50, 300)
+        
+        # 收集上三角矩阵的输入值
         d_matrix = np.zeros((N, N))
         for i in range(N):
             cols = st.columns(N)
             for j in range(N):
                 if i == j:
-                    d_matrix[i, j] = 0  # 对角线为0（自身到自身距离）
-                    cols[j].number_input(f"点{i+1}→点{j+1}", value=0, disabled=True)
+                    d_matrix[i, j] = 0  # 对角线为0
+                    cols[j].number_input(f"P{i+1}→P{j+1}", value=0, disabled=True, key=f"dist_{i}_{j}")
+                elif i < j:
+                    # 只输入上三角矩阵
+                    key = f"dist_{i}_{j}"
+                    init_val = st.session_state.init_distances.get(f"{i}_{j}", np.random.randint(50, 300))
+                    value = cols[j].number_input(f"P{i+1}→P{j+1}", min_value=1, value=init_val, key=key)
+                    d_matrix[i, j] = value
+                    d_matrix[j, i] = value  # 自动填充对称位置
                 else:
-                    d_matrix[i, j] = cols[j].number_input(f"点{i+1}→点{j+1}", min_value=1, value=np.random.randint(50, 300))
+                    # 下三角矩阵显示对称值（只读，从已输入的上三角获取）
+                    sym_value = int(d_matrix[j, i]) if d_matrix[j, i] > 0 else 0
+                    cols[j].number_input(f"P{i+1}→P{j+1}", value=sym_value, disabled=True, key=f"dist_{i}_{j}_auto")
+        
+        # 确保矩阵完全对称（a到b的距离 = b到a的距离）
+        d_matrix = (d_matrix + d_matrix.T) / 2
+        np.fill_diagonal(d_matrix, 0)
+    
+    # 最终对称化处理（确保矩阵完全对称）
+    d_matrix = (d_matrix + d_matrix.T) / 2
+    np.fill_diagonal(d_matrix, 0)
+    
     st.write("当前距离矩阵：")
     # 创建带英文标签的DataFrame
     df_distance = pd.DataFrame(
