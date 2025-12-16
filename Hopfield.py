@@ -6,7 +6,7 @@ import matplotlib.animation as animation
 from matplotlib import rcParams
 
 # 全局配置（适配教学可视化）
-rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS']  # 支持中文
+rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'sans-serif']  # 使用英文字体
 rcParams['axes.unicode_minus'] = False
 
 # ---------------------- 核心算法：简化Hopfield网络求解TSP ----------------------
@@ -191,10 +191,10 @@ def main():
         # 能量变化曲线（类比小球沿曲面滚动）
         col2.write("能量变化曲线（越低越优）：")
         fig, ax = plt.subplots(figsize=(6, 3))
-        ax.plot(energy_history, label="能量值", color="#1f77b4")
-        ax.set_xlabel("迭代次数")
-        ax.set_ylabel("能量值")
-        ax.set_title("能量收敛过程（类比小球滚向最低点）")
+        ax.plot(energy_history, label="Energy", color="#1f77b4")
+        ax.set_xlabel("Iteration")
+        ax.set_ylabel("Energy")
+        ax.set_title("Energy Convergence Process")
         ax.legend()
         ax.grid(True, alpha=0.3)
         st.pyplot(fig)
